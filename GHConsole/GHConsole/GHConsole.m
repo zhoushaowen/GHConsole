@@ -676,6 +676,7 @@ tap
 }
 
 - (void)scrollToBottom {
+    [self.consoleWindow.consoleRootViewController->_tableView reloadData];
     if(self.logStingArray.count > 0){
         [self.consoleWindow.consoleRootViewController->_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.logStingArray.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
     }
