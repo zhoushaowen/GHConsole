@@ -39,6 +39,7 @@
     for(int i=0;i<50;i++){
         GGLog(@"测试性能,测试性能测试性能测试性能测试性能测试性能");
     }
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated{

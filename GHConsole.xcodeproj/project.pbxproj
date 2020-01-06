@@ -37,7 +37,7 @@
 /* Begin PBXFileReference section */
 		2462801D1FBDB1DF0053B06B /* GHConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHConsole.h; sourceTree = "<group>"; };
 		2462801E1FBDB1DF0053B06B /* GHConsole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHConsole.m; sourceTree = "<group>"; };
-		36443EAA21534A10000FC8CF /* GHConsole.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = GHConsole.bundle; sourceTree = "<group>"; };
+		36443EAA21534A10000FC8CF /* GHConsole.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GHConsole.bundle; sourceTree = "<group>"; };
 		9F46E6B71EE1033D00087E4B /* GHConsole.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GHConsole.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F46E6BB1EE1033D00087E4B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9F46E6BD1EE1033D00087E4B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -197,6 +197,7 @@
 				TargetAttributes = {
 					9F46E6B61EE1033D00087E4B = {
 						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = XGFBK8EPZK;
 						ProvisioningStyle = Automatic;
 					};
 					9F46E6CF1EE1033D00087E4B = {
@@ -216,6 +217,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -430,7 +432,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = XGFBK8EPZK;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = GHConsole/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -444,7 +446,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = XGFBK8EPZK;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = GHConsole/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

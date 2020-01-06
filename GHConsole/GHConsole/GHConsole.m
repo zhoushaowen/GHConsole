@@ -20,7 +20,7 @@
 typedef void (^clearTextBlock)(void);
 typedef void (^readTextBlock)(void);
 
-@interface GHTextViewController : UIViewController
+@interface GHTextViewController : UIViewController<UITextViewDelegate>
 
 @property (nonatomic,copy) NSString *text;
 
@@ -32,7 +32,8 @@ typedef void (^readTextBlock)(void);
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
     UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, self.view.bounds.size.height)];
-    textView.editable = NO;
+//    textView.editable = NO;
+    textView.delegate = self;
     textView.backgroundColor = [UIColor blackColor];
     textView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     textView.textColor = [UIColor whiteColor];
@@ -45,6 +46,10 @@ typedef void (^readTextBlock)(void);
     [self.view addSubview:backBtn];
     [backBtn addTarget:self action:@selector(backBtnAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:textView];
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    return NO;
 }
 
 - (void)backBtnAction {
