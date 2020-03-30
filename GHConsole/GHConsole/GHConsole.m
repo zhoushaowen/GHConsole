@@ -16,6 +16,32 @@
 #define USE_PTHREAD_THREADID_NP                (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_8_0)
 #define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size)||CGSizeEqualToSize(CGSizeMake(828, 1792), [[UIScreen mainScreen] currentMode].size)||CGSizeEqualToSize(CGSizeMake(1242, 2688), [[UIScreen mainScreen] currentMode].size)) : NO)
 
+
+@class GHConsoleWindow;
+
+#pragma mark- GHConsole
+@interface GHConsole (){
+    NSDate *_timestamp;
+    NSString *_timeString;
+}
+
+@property (nonatomic, strong)NSString *string;
+@property (nonatomic, assign)BOOL isShowConsole;
+//a global variable to prove performance
+//@property (nonatomic, copy)NSMutableString *logSting;
+@property (nonatomic, strong) NSMutableArray *logStingArray;
+@property (nonatomic, copy)NSString *funcString;
+
+@property (nonatomic, assign)NSInteger currentLogCount;
+@property (nonatomic, assign)BOOL isFullScreen;
+@property (nonatomic, strong)UIPanGestureRecognizer *panOutGesture;
+@property (nonatomic,strong) GHConsoleWindow *consoleWindow;
+@property (nonatomic, strong)NSDateFormatter *formatter;
+@property (nonatomic, copy)NSString *msgString;
+@property (nonatomic, strong)NSDate *now;
+@property (nonatomic, strong)NSLock *lock;
+@end
+
 #pragma mark- GHConsoleRootViewController
 typedef void (^clearTextBlock)(void);
 typedef void (^readTextBlock)(void);
@@ -79,6 +105,14 @@ typedef void (^readTextBlock)(void);
 @end
 
 @implementation GHConsoleRootViewController
+
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -323,6 +357,13 @@ typedef void (^readTextBlock)(void);
     });
 }
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    [[GHConsole sharedConsole].logStingArray removeAllObjects];
+    [[GHConsole sharedConsole].logStingArray addObject:@"收到了系统内存警告!所有日志被清空!"];
+    self.dataSource = [GHConsole sharedConsole].logStingArray;
+}
+
 @end
 
 
@@ -343,7 +384,7 @@ typedef void (^readTextBlock)(void);
 - (void)minimize;
 
 /**
- the point of origin X-axis and Y-axis 
+ the point of origin X-axis and Y-axis
  */
 @property (nonatomic, assign)CGPoint axisXY;
 
@@ -366,7 +407,7 @@ typedef void (^readTextBlock)(void);
 
 - (void)maxmize {
     self.consoleRootViewController.view.backgroundColor = [UIColor blackColor];
-    self.frame = [UIScreen mainScreen].bounds;
+    self.frame = CGRectMake(0, 0, MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height), MAX([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height));
     [self setNeedsLayout];
     [self layoutIfNeeded];
     self.consoleRootViewController.scrollEnable = YES;
@@ -403,28 +444,7 @@ typedef void (^readTextBlock)(void);
 
 
 
-#pragma mark- GHConsole
-@interface GHConsole (){
-    NSDate *_timestamp;
-    NSString *_timeString;
-}
 
-@property (nonatomic, strong)NSString *string;
-@property (nonatomic, assign)BOOL isShowConsole;
-//a global variable to prove performance
-//@property (nonatomic, copy)NSMutableString *logSting;
-@property (nonatomic, strong) NSMutableArray *logStingArray;
-@property (nonatomic, copy)NSString *funcString;
-
-@property (nonatomic, assign)NSInteger currentLogCount;
-@property (nonatomic, assign)BOOL isFullScreen;
-@property (nonatomic, strong)UIPanGestureRecognizer *panOutGesture;
-@property (nonatomic,strong) GHConsoleWindow *consoleWindow;
-@property (nonatomic, strong)NSDateFormatter *formatter;
-@property (nonatomic, copy)NSString *msgString;
-@property (nonatomic, strong)NSDate *now;
-@property (nonatomic, strong)NSLock *lock;
-@end
 @implementation GHConsole
 
 
@@ -441,12 +461,12 @@ typedef void (^readTextBlock)(void);
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (GHConsoleWindow *)consoleWindow {
     if(!_consoleWindow){
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReceiveMemoryWarningNotification) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReceiveMemoryWarningNotification) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         _consoleWindow = [GHConsoleWindow consoleWindow];
         _consoleWindow.rootViewController = [GHConsoleRootViewController new];
         _consoleWindow.rootViewController.view.backgroundColor = [UIColor clearColor];
@@ -462,7 +482,7 @@ typedef void (^readTextBlock)(void);
         };
         //right direction swipe and double tap to make the console be hidden
 //        UISwipeGestureRecognizer *swipeGest = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeLogView:)];
-        UITapGestureRecognizer *tappGest = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapImageView:)];
+        UITapGestureRecognizer *tappGest = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapImageView:)];
         
 //        [_consoleWindow.rootViewController.view addGestureRecognizer:swipeGest];
         [_consoleWindow.rootViewController.view addGestureRecognizer:self.panOutGesture];
@@ -570,11 +590,6 @@ typedef void (^readTextBlock)(void);
     return _logStingArray;
 }
 
-- (void)handleReceiveMemoryWarningNotification {
-    [self.logStingArray removeAllObjects];
-    [self.logStingArray addObject:@"收到了系统内存警告!所有日志被清空!"];
-    self.consoleWindow.consoleRootViewController.dataSource = self.logStingArray;
-}
 
 #pragma mark- gesture function
 /**
