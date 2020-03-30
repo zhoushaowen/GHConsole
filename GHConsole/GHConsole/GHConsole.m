@@ -139,7 +139,7 @@ typedef void (^readTextBlock)(void);
 //    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, (KIsiPhoneX?24:0) + 44, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - (KIsiPhoneX?24:0) - 44) style:UITableViewStylePlain];
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.tableFooterView = [UIView new];
-    _tableView.separatorColor = [UIColor whiteColor];
+    _tableView.separatorColor = [UIColor cyanColor];
     _tableView.estimatedRowHeight = 44;
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -287,6 +287,7 @@ typedef void (^readTextBlock)(void);
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Cell];
     if(cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:Cell];
+        cell.separatorInset = UIEdgeInsetsZero;
         cell.contentView.backgroundColor = [UIColor blackColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
 //        UILabel *label = [[UILabel alloc] init];
